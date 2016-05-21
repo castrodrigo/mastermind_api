@@ -1,0 +1,3 @@
+mastermind_core_homepage:
+    path:     /
+    defaults: { _controller: MastermindCoreBundle:Default:index }

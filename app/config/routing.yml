@@ -1,3 +1,7 @@
-app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
+mastermind_api:
+    resource: "@MastermindApiBundle/Resources/config/routing.yml"
+    prefix:   /api
+
+mastermind_core:
+    resource: "@MastermindCoreBundle/Resources/config/routing.yml"
+    prefix:   /

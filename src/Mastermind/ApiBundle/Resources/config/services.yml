@@ -1,0 +1,4 @@
+services:
+#    mastermind_api.example:
+#        class: Mastermind\ApiBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]

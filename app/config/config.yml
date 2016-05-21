@@ -70,8 +70,8 @@ swiftmailer:
     spool:     { type: memory }
 
 fos_rest:
-    exception:
-        enabled: true
-        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
+#    exception:
+#        enabled: true
+#        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
     routing_loader:
         default_format: json
