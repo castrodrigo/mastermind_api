@@ -9,17 +9,17 @@
 namespace Mastermind\CoreBundle\Tests\Models;
 
 
-use Mastermind\CoreBundle\Models\Color;
-use Mastermind\CoreBundle\Models\Game;
-use Mastermind\CoreBundle\Models\GameConfig;
-use Mastermind\CoreBundle\Models\Guess;
-use Mastermind\CoreBundle\Models\User;
+use Mastermind\CoreBundle\Document\Color;
+use Mastermind\CoreBundle\Document\Game;
+use Mastermind\CoreBundle\Document\GameConfig;
+use Mastermind\CoreBundle\Document\Guess;
+use Mastermind\CoreBundle\Document\Player;
 
 class GuessTest extends \PHPUnit_Framework_TestCase
 {
     public function test_must_generate_guess()
     {
-        $game = new Game(new User("User"), new GameConfig());
+        $game = new Game(new Player("User"), new GameConfig());
         $guess = (new Guess())->generate($game);
 
         $this->assertEquals($game->getConfig()->getCodeLength(), strlen($guess));
@@ -27,7 +27,7 @@ class GuessTest extends \PHPUnit_Framework_TestCase
 
     public function test_guess_must_return_string()
     {
-        $game = new Game(new User("User"), new GameConfig());
+        $game = new Game(new Player("User"), new GameConfig());
         $guess = (new Guess())->generate($game);
 
         $this->assertTrue(is_string($guess->toString()));
@@ -35,7 +35,7 @@ class GuessTest extends \PHPUnit_Framework_TestCase
 
     public function test_guess_must_return_array()
     {
-        $game = new Game(new User("User"), new GameConfig());
+        $game = new Game(new Player("User"), new GameConfig());
         $guess = (new Guess())->generate($game);
 
         $this->assertTrue(is_array($guess->getColors()));
@@ -43,7 +43,7 @@ class GuessTest extends \PHPUnit_Framework_TestCase
 
     public function test_must_generate_guess_custom()
     {
-        $game = new Game(new User("User"), (new GameConfig())->setCodeLength(6));
+        $game = new Game(new Player("User"), (new GameConfig())->setCodeLength(6));
         $guess = (new Guess())->generate($game);
 
         $this->assertEquals($game->getConfig()->getCodeLength(), strlen($guess));
@@ -62,7 +62,7 @@ class GuessTest extends \PHPUnit_Framework_TestCase
          */
         $user_guess = new Guess(Color::COLORS);
 
-        $this->assertEquals(8, $user_guess->checkExacts($guess));
+        $this->assertEquals(8, $user_guess->checkExacts($guess)->getExact());
     }
 
     public function test_check_exact_must_return_partial_exact()
@@ -79,7 +79,7 @@ class GuessTest extends \PHPUnit_Framework_TestCase
          */
         $user_guess = new Guess("RxxYxxxM");
 
-        $this->assertEquals(3, $user_guess->checkExacts($guess));
+        $this->assertEquals(3, $user_guess->checkExacts($guess)->getExact());
     }
 
     public function test_check_near_must_return_all_near()
@@ -95,8 +95,8 @@ class GuessTest extends \PHPUnit_Framework_TestCase
          */
         $user_guess = new Guess(strrev(Color::COLORS));
         
-        $this->assertEquals(0, $user_guess->checkExacts($guess));
-        $this->assertEquals(8, $user_guess->checkNear($guess));
+        $this->assertEquals(0, $user_guess->checkExacts($guess)->getExact());
+        $this->assertEquals(8, $user_guess->checkNear($guess)->getNear());
     }
 
     public function test_check_near_must_return_partial_near()
@@ -112,8 +112,8 @@ class GuessTest extends \PHPUnit_Framework_TestCase
          */
         $user_guess = new Guess("xRxxxxxx");
 
-        $this->assertEquals(0, $user_guess->checkExacts($guess));
-        $this->assertEquals(1, $user_guess->checkNear($guess));
+        $this->assertEquals(0, $user_guess->checkExacts($guess)->getExact());
+        $this->assertEquals(1, $user_guess->checkNear($guess)->getNear());
     }
 
     public function test_check_near_and_exact_sum_must_not_be_greater_than_code_lenght()
@@ -129,8 +129,8 @@ class GuessTest extends \PHPUnit_Framework_TestCase
          */
         $user_guess = new Guess("RB" . strrev('GYOPCM'));
 
-        $this->assertEquals(2, $user_guess->checkExacts($guess));
-        $this->assertEquals(6, $user_guess->checkNear($guess));
+        $this->assertEquals(2, $user_guess->checkExacts($guess)->getExact());
+        $this->assertEquals(6, $user_guess->checkNear($guess)->getNear());
     }
 
     public function test_check_near_and_exact()
@@ -146,7 +146,7 @@ class GuessTest extends \PHPUnit_Framework_TestCase
          */
         $user_guess = new Guess("RB" . strrev('GYxPCM'));
 
-        $this->assertEquals(2, $user_guess->checkExacts($guess));
-        $this->assertEquals(5, $user_guess->checkNear($guess));
+        $this->assertEquals(2, $user_guess->checkExacts($guess)->getExact());
+        $this->assertEquals(5, $user_guess->checkNear($guess)->getNear());
     }
 }

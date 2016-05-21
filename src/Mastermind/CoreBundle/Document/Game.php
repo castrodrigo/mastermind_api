@@ -1,32 +1,59 @@
 <?php
+
+namespace Mastermind\CoreBundle\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+
 /**
- * Created by PhpStorm.
- * User: fsynthis
- * Date: 21/05/16
- * Time: 10:36
+ * Class Game
+ * @package Mastermind\CoreBundle\Document
+ * @MongoDB\Document
  */
-
-namespace Mastermind\CoreBundle\Models;
-
-
 class Game
 {
-    private $guess;
-    private $user;
-    private $config;
+
+    /**
+     * @MongoDB\Id
+     */
     private $game_key;
+
+    /**
+     * @MongoDB\String
+     */
+    private $guess;
+
+    /**
+     * @MongoDB\ReferenceOne(targetDocument="Player", cascade={"persist", "remove"})
+     */
+    private $user;
+
+    /**
+     * @MongoDB\ReferenceOne(targetDocument="GameConfig", cascade={"persist", "remove"})
+     */
+    private $config;
+
+    /**
+     * @MongoDB\Integer
+     */
     private $num_guesses;
+
+    /**
+     * @MongoDB\ReferenceMany(targetDocument="Guess", cascade={"persist", "remove"})
+     */
     private $past_results;
+
+    /**
+     * @MongoDB\Boolean
+     */
     private $solved;
 
     /**
      * Game constructor.
-     * @param User $user
+     * @param Player $player
      * @param GameConfig $config
      */
-    public function __construct(User $user, GameConfig $config)
+    public function __construct(Player $player, GameConfig $config)
     {
-        $this->user = $user;
+        $this->user = $player;
         $this->config = $config;
         $this->guess = (new Guess())->generate($this);
     }
@@ -46,7 +73,7 @@ class Game
     }
 
     /**
-     * @return User
+     * @return Player
      */
     public function getUser()
     {
@@ -54,9 +81,9 @@ class Game
     }
 
     /**
-     * @param User $user
+     * @param Player $user
      */
-    public function setUser(User $user)
+    public function setUser(Player $user)
     {
         $this->user = $user;
     }
@@ -131,5 +158,49 @@ class Game
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * Set guess
+     *
+     * @param string $guess
+     * @return self
+     */
+    public function setGuess($guess)
+    {
+        $this->guess = $guess;
+        return $this;
+    }
+
+    /**
+     * Set config
+     *
+     * @param GameConfig $config
+     * @return self
+     */
+    public function setConfig(GameConfig $config)
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    /**
+     * Add pastResult
+     *
+     * @param Guess $pastResult
+     */
+    public function addPastResult(Guess $pastResult)
+    {
+        $this->past_results[] = $pastResult;
+    }
+
+    /**
+     * Remove pastResult
+     *
+     * @param Guess $pastResult
+     */
+    public function removePastResult(Guess $pastResult)
+    {
+        $this->past_results->removeElement($pastResult);
     }
 }

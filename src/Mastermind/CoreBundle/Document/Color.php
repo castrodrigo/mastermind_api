@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: fsynthis
- * Date: 21/05/16
- * Time: 10:57
- */
 
-namespace Mastermind\CoreBundle\Models;
+namespace Mastermind\CoreBundle\Document;
 
 
 final class Color

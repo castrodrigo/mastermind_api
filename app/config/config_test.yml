@@ -14,3 +14,14 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine_mongodb:
+    connections:
+        default:
+            server: mongodb://localhost:27017
+            options: {}
+    default_database: mastermind_test
+    document_managers:
+        default:
+            auto_mapping: true
+    auto_generate_hydrator_classes:  2

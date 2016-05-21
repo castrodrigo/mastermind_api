@@ -1,18 +1,35 @@
 <?php
+
+namespace Mastermind\CoreBundle\Document;
+
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+
 /**
- * Created by PhpStorm.
- * User: fsynthis
- * Date: 21/05/16
- * Time: 10:45
+ * Class GameConfig
+ * @package Mastermind\CoreBundle\Document
+ * @MongoDB\Document
  */
-
-namespace Mastermind\CoreBundle\Models;
-
-
 class GameConfig
 {
+    /**
+     * @MongoDB\Id
+     */
+    private $id;
+
+    /**
+     * @MongoDB\Integer
+     */
     private $code_length;
+
+    /**
+     * @MongoDB\Integer
+     */
     private $time_limit;
+
+    /**
+     * @MongoDB\Integer
+     */
     private $guess_limit;
 
     /**
@@ -78,5 +95,13 @@ class GameConfig
     public function getGuessLimit()
     {
         return $this->guess_limit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
