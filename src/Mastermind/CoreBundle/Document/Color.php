@@ -6,7 +6,16 @@ namespace Mastermind\CoreBundle\Document;
 final class Color
 {
     const COLORS = "RBGYOPCM";
-
+    
+    const RED = "R";
+    const BLUE = "B";
+    const GREEN = "G";
+    const YELLOW = "Y";
+    const ORANGE = "O";
+    const PURPLE = "P";
+    const CYAN = "C";
+    const MAGENTA = "M";
+    
     public function __toString()
     {
         return static::COLORS;

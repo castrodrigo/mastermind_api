@@ -42,6 +42,21 @@ class GameConfig
         $this->guess_limit = 0;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getGame()
+    {
+        return $this->game;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCodeLength()
+    {
+        return $this->code_length;
+    }
 
     /**
      * @param mixed $code_length
@@ -51,6 +66,14 @@ class GameConfig
     {
         $this->code_length = $code_length;
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeLimit()
+    {
+        return $this->time_limit;
     }
 
     /**
@@ -64,6 +87,14 @@ class GameConfig
     }
 
     /**
+     * @return int
+     */
+    public function getGuessLimit()
+    {
+        return $this->guess_limit;
+    }
+
+    /**
      * @param int $guess_limit The max number of user's guesses, 0 if unlimited
      * @return GameConfig
      */
@@ -71,30 +102,6 @@ class GameConfig
     {
         $this->guess_limit = $guess_limit;
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCodeLength()
-    {
-        return $this->code_length;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeLimit()
-    {
-        return $this->time_limit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getGuessLimit()
-    {
-        return $this->guess_limit;
     }
 
     /**

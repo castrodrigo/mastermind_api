@@ -17,7 +17,7 @@ class Player
      * @MongoDB\Id
      */
     private $id;
-    
+
     /**
      * @MongoDB\String
      */
@@ -56,8 +56,4 @@ class Player
         $this->name = $name;
     }
 
-    public function createGame(GameInterface $game)
-    {
-        return $game->start();
-    }
 }

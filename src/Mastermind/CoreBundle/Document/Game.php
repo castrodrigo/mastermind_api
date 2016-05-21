@@ -11,6 +11,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 class Game
 {
 
+    public static $answer = [];
+    
     /**
      * @MongoDB\Id
      */
@@ -44,7 +46,7 @@ class Game
     /**
      * @MongoDB\Boolean
      */
-    private $solved;
+    private $solved = false;
 
     /**
      * Game constructor.
@@ -55,7 +57,7 @@ class Game
     {
         $this->user = $player;
         $this->config = $config;
-        $this->guess = (new Guess())->generate($this);
+        $this->guess = (new Guess())->generate($this)->toString();
     }
 
 
@@ -65,7 +67,7 @@ class Game
     }
 
     /**
-     * @return Guess
+     * @return string
      */
     public function getGuess()
     {
@@ -118,22 +120,6 @@ class Game
     public function setNumGuesses($num_guesses)
     {
         $this->num_guesses = $num_guesses;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getPastResults()
-    {
-        return $this->past_results;
-    }
-
-    /**
-     * @param ArrayCollection $past_results
-     */
-    public function setPastResults($past_results)
-    {
-        $this->past_results = $past_results;
     }
 
     /**
@@ -202,5 +188,29 @@ class Game
     public function removePastResult(Guess $pastResult)
     {
         $this->past_results->removeElement($pastResult);
+    }
+
+    /**
+     * Validates a given guess and add to a Past Result Collection
+     *
+     * @param Guess $user_guess
+     */
+    public function addUserGuess(Guess $user_guess)
+    {
+        $user_guess->validate(new Guess($this->getGuess()));
+        $this::$answer = $user_guess::$answer;
+        
+        $this->setSolved($user_guess->getExact() == $this->getConfig()->getCodeLength());
+        $this->addPastResult($user_guess);
+    }
+
+    /**
+     * Get pastResults
+     *
+     * @return \Doctrine\Common\Collections\Collection $pastResults
+     */
+    public function getPastResults()
+    {
+        return $this->past_results;
     }
 }
