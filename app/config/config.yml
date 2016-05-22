@@ -86,3 +86,9 @@ fos_rest:
 #        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
     routing_loader:
         default_format: json
+
+stof_doctrine_extensions:
+    default_locale: en
+    mongodb:
+        default:
+            timestampable: true

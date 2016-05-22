@@ -4,6 +4,7 @@ namespace Mastermind\CoreBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use JMS\Serializer\Annotation as Serializer;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Class Game
@@ -64,6 +65,20 @@ class Game
      * @Serializer\Exclude
      */
     private $last_guess;
+
+    /**
+     * @MongoDB\Date
+     * @Gedmo\Timestampable(on="create")
+     * @Serializer\Exclude
+     */
+    private $created_at;
+
+    /**
+     * @MongoDB\Date
+     * @Gedmo\Timestampable
+     * @Serializer\Exclude
+     */
+    private $updated_at;
 
     /**
      * Game constructor.
@@ -295,5 +310,49 @@ class Game
     public function getInstructions()
     {
         return static::INSTRUCTIONS;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param timestamp $createdAt
+     * @return self
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return timestamp $createdAt
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param timestamp $updatedAt
+     * @return self
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return timestamp $updatedAt
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }
