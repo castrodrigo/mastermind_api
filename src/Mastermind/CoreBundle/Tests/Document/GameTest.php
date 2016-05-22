@@ -76,13 +76,14 @@ class GameTest extends KernelTestCase
     public function test_must_stack_guesses_until_solve()
     {
         $game = new Game(new Player("New"), new GameConfig);
+        $this->manager->persist($game);
+        $this->manager->flush();
 
         while (!$game->getSolved()) {
             $guess = (new Guess())->generate($game, true);
             $game->addUserGuess($guess);
         }
 
-        $this->manager->persist($game);
         $this->manager->flush();
 
         $this->assertTrue($game->getSolved());

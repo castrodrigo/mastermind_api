@@ -3,14 +3,14 @@
 namespace Mastermind\CoreBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Game
  * @package Mastermind\CoreBundle\Document
  * @MongoDB\Document
- * @Serializer\AccessorOrder("custom", custom = {"colors", "getCodeLength", "game_key", "getLastGuessColors", "getNumGuesses", "past_results", "getLastGuessResult", "solved"})
+ * @Serializer\AccessorOrder("custom", custom = {"colors", "getCodeLength", "game_key", "getLastGuessColors", "getNumGuesses", "past_results", "getLastGuessResult", "solved", "getTimeTaken", "getPlayerName"})
  */
 class Game
 {
@@ -32,7 +32,7 @@ class Game
      * @MongoDB\Field(name="colors", type="collection")
      * @Serializer\SerializedName("colors")
      * @Serializer\Groups({"default", "details", "win"})
-     * 
+     *
      */
     private $colors;
 
@@ -192,22 +192,6 @@ class Game
     }
 
     /**
-     * @return boolean
-     */
-    public function getSolved()
-    {
-        return $this->solved;
-    }
-
-    /**
-     * @param boolean $solved
-     */
-    public function setSolved($solved)
-    {
-        $this->solved = $solved;
-    }
-
-    /**
      * Remove pastResult
      *
      * @param Guess $pastResult
@@ -286,7 +270,7 @@ class Game
      */
     public function getLastGuessResult()
     {
-        if($this->getSolved()) {
+        if ($this->getSolved()) {
             return static::WIN_RESULT;
         }
 
@@ -302,6 +286,48 @@ class Game
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("user")
+     * @Serializer\Groups({"win"})
+     *
+     * @return string
+     */
+    public function getPlayerName()
+    {
+        return $this->getPlayer()->getName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("time_taken")
+     * @Serializer\Groups({"win"})
+     *
+     * @return string
+     */
+    public function getTimeTaken()
+    {
+        $created_at = $this->getCreatedAt()->getTimestamp() . "." . $this->getCreatedAt()->format('u');
+        $updated_at = $this->getUpdatedAt()->getTimestamp() . "." . $this->getUpdatedAt()->format('u');
+        return $updated_at - $created_at;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getSolved()
+    {
+        return $this->solved;
+    }
+
+    /**
+     * @param boolean $solved
+     */
+    public function setSolved($solved)
+    {
+        $this->solved = $solved;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("further_instructions")
      * @Serializer\Groups({"win"})
      *
@@ -310,6 +336,16 @@ class Game
     public function getInstructions()
     {
         return static::INSTRUCTIONS;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return timestamp $createdAt
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
     }
 
     /**
@@ -325,13 +361,13 @@ class Game
     }
 
     /**
-     * Get createdAt
+     * Get updatedAt
      *
-     * @return timestamp $createdAt
+     * @return timestamp $updatedAt
      */
-    public function getCreatedAt()
+    public function getUpdatedAt()
     {
-        return $this->created_at;
+        return $this->updated_at;
     }
 
     /**
@@ -344,15 +380,5 @@ class Game
     {
         $this->updated_at = $updatedAt;
         return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return timestamp $updatedAt
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updated_at;
     }
 }
