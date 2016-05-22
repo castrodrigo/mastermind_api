@@ -1,6 +1,10 @@
 # mastermind_api
 Mastermind API Project
 
+##API Documentation
+
+http://docs.vanhackmastermind.apiary.io/
+
 # local setup
 ```
 1. clone project
