@@ -29,7 +29,10 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "friendsofsymfony/rest-bundle": "^1.7",
         "doctrine/mongodb-odm": "~1.0",
-        "doctrine/mongodb-odm-bundle": "~3.0"
+        "doctrine/mongodb-odm-bundle": "~3.0",
+        "symfony/serializer": "^3.0",
+        "jms/serializer": "^1.1",
+        "jms/serializer-bundle": "^1.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

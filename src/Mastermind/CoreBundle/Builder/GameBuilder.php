@@ -9,7 +9,7 @@
 namespace Mastermind\CoreBundle\Builder;
 
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Mastermind\CoreBundle\Document\Game;
 
 class GameBuilder
@@ -18,9 +18,9 @@ class GameBuilder
 
     /**
      * GameBuilder constructor.
-     * @param ObjectManager $manager
+     * @param DocumentManager $manager
      */
-    public function __construct(ObjectManager $manager)
+    public function __construct($manager)
     {
         $this->manager = $manager;
     }

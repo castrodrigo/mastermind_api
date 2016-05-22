@@ -18,7 +18,8 @@ class AppKernel extends Kernel
             new FOS\RestBundle\FOSRestBundle(),
             new Mastermind\CoreBundle\MastermindCoreBundle(),
             new Mastermind\ApiBundle\MastermindApiBundle(),
-            new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle
+            new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

@@ -1,52 +1,69 @@
 <?php
 
 namespace Mastermind\CoreBundle\Document;
+
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Game
  * @package Mastermind\CoreBundle\Document
  * @MongoDB\Document
+ * @Serializer\AccessorOrder("custom", custom = {"colors", "getCodeLength", "game_key", "getLastGuessColors", "getNumGuesses", "past_results", "getLastGuessResult", "solved"})
  */
 class Game
 {
+    const WIN_RESULT = "You win!";
+    const INSTRUCTIONS = "Solve the challenge to see this!";
 
+    /**
+     * @Serializer\Exclude
+     */
     public static $answer = [];
-    
+
     /**
      * @MongoDB\Id
+     * @Serializer\Groups({"default", "details", "win"})
      */
     private $game_key;
 
     /**
-     * @MongoDB\String
+     * @MongoDB\Field(name="colors", type="collection")
+     * @Serializer\SerializedName("colors")
+     * @Serializer\Groups({"default", "details", "win"})
+     * 
      */
-    private $guess;
+    private $colors;
 
     /**
      * @MongoDB\ReferenceOne(targetDocument="Player", cascade={"persist", "remove"})
+     * @Serializer\Exclude
      */
-    private $user;
+    private $player;
 
     /**
      * @MongoDB\ReferenceOne(targetDocument="GameConfig", cascade={"persist", "remove"})
+     * @Serializer\Exclude
      */
     private $config;
 
     /**
-     * @MongoDB\Integer
-     */
-    private $num_guesses;
-
-    /**
      * @MongoDB\ReferenceMany(targetDocument="Guess", cascade={"persist", "remove"})
+     * @Serializer\Groups({"default", "details", "win"})
      */
-    private $past_results;
+    private $past_results = [];
 
     /**
      * @MongoDB\Boolean
+     * @Serializer\Groups({"default", "details", "win"})
      */
     private $solved = false;
+
+    /**
+     * @var Guess
+     * @Serializer\Exclude
+     */
+    private $last_guess;
 
     /**
      * Game constructor.
@@ -55,11 +72,10 @@ class Game
      */
     public function __construct(Player $player, GameConfig $config)
     {
-        $this->user = $player;
+        $this->player = $player;
         $this->config = $config;
-        $this->guess = (new Guess())->generate($this)->toString();
+        $this->colors = (new Guess())->generate($this)->getColors();
     }
-
 
     public function __toString()
     {
@@ -67,27 +83,19 @@ class Game
     }
 
     /**
-     * @return string
-     */
-    public function getGuess()
-    {
-        return $this->guess;
-    }
-
-    /**
      * @return Player
      */
-    public function getUser()
+    public function getPlayer()
     {
-        return $this->user;
+        return $this->player;
     }
 
     /**
-     * @param Player $user
+     * @param Player $player
      */
-    public function setUser(Player $user)
+    public function setPlayer(Player $player)
     {
-        $this->user = $user;
+        $this->player = $player;
     }
 
     /**
@@ -107,11 +115,57 @@ class Game
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("num_guesses")
+     * @Serializer\Groups({"default", "details", "win"})
+     *
      * @return int
      */
     public function getNumGuesses()
     {
-        return $this->num_guesses;
+        return count($this->getPastResults());
+    }
+
+    /**
+     * Get pastResults
+     *
+     * @return \Doctrine\Common\Collections\Collection $pastResults
+     */
+    public function getPastResults()
+    {
+        return $this->past_results;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("code_length")
+     * @Serializer\Groups({"default", "details", "win"})
+     *
+     * @return int
+     */
+    public function getCodeLength()
+    {
+        return $this->getConfig()->getCodeLength();
+    }
+
+    /**
+     * @return GameConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Set config
+     *
+     * @param GameConfig $config
+     * @return self
+     */
+    public function setConfig(GameConfig $config)
+    {
+        $this->config = $config;
+        return $this;
     }
 
     /**
@@ -139,48 +193,6 @@ class Game
     }
 
     /**
-     * @return GameConfig
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * Set guess
-     *
-     * @param string $guess
-     * @return self
-     */
-    public function setGuess($guess)
-    {
-        $this->guess = $guess;
-        return $this;
-    }
-
-    /**
-     * Set config
-     *
-     * @param GameConfig $config
-     * @return self
-     */
-    public function setConfig(GameConfig $config)
-    {
-        $this->config = $config;
-        return $this;
-    }
-
-    /**
-     * Add pastResult
-     *
-     * @param Guess $pastResult
-     */
-    public function addPastResult(Guess $pastResult)
-    {
-        $this->past_results[] = $pastResult;
-    }
-
-    /**
      * Remove pastResult
      *
      * @param Guess $pastResult
@@ -197,20 +209,91 @@ class Game
      */
     public function addUserGuess(Guess $user_guess)
     {
-        $user_guess->validate(new Guess($this->getGuess()));
+        $user_guess->validate(new Guess($this->getColors()));
         $this::$answer = $user_guess::$answer;
-        
         $this->setSolved($user_guess->getExact() == $this->getConfig()->getCodeLength());
-        $this->addPastResult($user_guess);
+        $this->last_guess = $user_guess;
+        $this->addPastResult($this->last_guess);
+    }
+
+    public function getColors()
+    {
+        return $this->colors;
     }
 
     /**
-     * Get pastResults
+     * Set colors
      *
-     * @return \Doctrine\Common\Collections\Collection $pastResults
+     * @param collection $colors
+     * @return self
      */
-    public function getPastResults()
+    public function setColors($colors)
     {
-        return $this->past_results;
+        $this->colors = $colors;
+        return $this;
+    }
+
+    /**
+     * Add pastResult
+     *
+     * @param Guess $pastResult
+     */
+    public function addPastResult(Guess $pastResult)
+    {
+        $this->past_results[] = $pastResult;
+    }
+
+    /**
+     * @return Guess
+     */
+    public function getGameGuess()
+    {
+        return new Guess($this->colors);
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("guess")
+     * @Serializer\Groups({"details", "win"})
+     * @return string
+     */
+    public function getLastGuessColors()
+    {
+        return $this->last_guess ? $this->last_guess->toString() : null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("result")
+     * @Serializer\Groups({"details", "win"})
+     *
+     * @return array|null
+     */
+    public function getLastGuessResult()
+    {
+        if($this->getSolved()) {
+            return static::WIN_RESULT;
+        }
+
+        if ($this->last_guess) {
+            return [
+                'exact' => $this->last_guess->getExact(),
+                'near' => $this->last_guess->getNear()
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("further_instructions")
+     * @Serializer\Groups({"win"})
+     *
+     * @return string
+     */
+    public function getInstructions()
+    {
+        return static::INSTRUCTIONS;
     }
 }

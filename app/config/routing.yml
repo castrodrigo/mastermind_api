@@ -5,3 +5,7 @@ mastermind_api:
 mastermind_core:
     resource: "@MastermindCoreBundle/Resources/config/routing.yml"
     prefix:   /
+
+games:
+    type:     rest
+    resource: Mastermind\ApiBundle\Controller\GameController
