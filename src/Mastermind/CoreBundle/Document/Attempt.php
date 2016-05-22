@@ -29,6 +29,7 @@ class Attempt
 
     /**
      * @MongoDB\ReferenceMany(targetDocument="Guess", cascade={"persist", "remove"})
+     * @Serializer\Groups({"default"})
      */
     private $guesses = [];
 
