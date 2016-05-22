@@ -27,7 +27,7 @@ class GameController extends FOSRestController
 
     public function postAction(Request $request)
     {
-        $game = new Game(new Player($request->request->get('name')), new GameConfig());
+        $game = new Game(new Player($request->request->get('user')), new GameConfig());
         $game = $this->getBuilder()->start($game);
 
         $view = View::create();
