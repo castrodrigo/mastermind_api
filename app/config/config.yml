@@ -72,7 +72,7 @@ swiftmailer:
 doctrine_mongodb:
     connections:
         default:
-            server: mongodb://localhost:27017
+            server: %mongodb_server%
             options: {}
     default_database: mastermind
     document_managers:

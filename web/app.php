@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Sao_Paulo');
+
 use Symfony\Component\HttpFoundation\Request;
 
 /**

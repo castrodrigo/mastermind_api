@@ -1,0 +1,29 @@
+nginx:
+  image: nginx:1.9.5
+  ports:
+    - "80:80"
+    - "443:443"
+  links:
+    - php
+  extra_hosts:
+    - "mastermindapi.dev:127.0.0.1"
+  volumes:
+    - ./web:/var/www/html/dev/web
+    - ./docker/nginx/conf.d/app.conf:/etc/nginx/conf.d/default.conf
+    - ./docker/nginx/logs:/var/log/nginx
+db:
+  image:  mongo
+php:
+  image: rtancman/docker-symfony
+  links:
+    - db
+  volumes:
+    - ./app:/var/www/html/dev/app
+    - ./bin:/var/www/html/dev/bin
+    - ./src:/var/www/html/dev/src
+    - ./var:/var/www/html/dev/var
+    - ./web:/var/www/html/dev/web
+    - ./vendor:/var/www/html/dev/vendor
+    - ./composer.json:/var/www/html/dev/composer.json
+    - ./composer.lock:/var/www/html/dev/composer.lock
+    - ./docker/phpfpm-foreground:/usr/local/bin/phpfpm-foreground
