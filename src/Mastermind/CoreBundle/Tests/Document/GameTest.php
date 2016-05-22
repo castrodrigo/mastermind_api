@@ -44,7 +44,7 @@ class GameTest extends KernelTestCase
 
         static::$game[] = $game->getGameKey();
 
-        $this->assertEquals($game->getConfig()->getCodeLength(), strlen($game->getGuess()));
+        $this->assertEquals($game->getConfig()->getCodeLength(), count($game->getColors()));
     }
 
     /**

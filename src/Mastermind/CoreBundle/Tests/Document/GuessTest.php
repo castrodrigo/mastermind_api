@@ -168,4 +168,56 @@ class GuessTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $user_guess->getExact());
         $this->assertEquals(5, $user_guess->getNear());
     }
+
+    public function test_check_near_and_exact_bug_found()
+    {
+        $guess = $this->getMockBuilder(Guess::class)
+            ->getMock();
+
+        $guess->method('getColors')
+            ->willReturn([
+                "R",
+                "Y",
+                "R",
+                "Y",
+                "C",
+                "R",
+                "R",
+                "M"
+            ]);
+
+        /**
+         * @var $guess Guess
+         */
+        $user_guess = new Guess("RRRRRRRR");
+
+        $this->assertEquals(4, $user_guess->checkExacts($guess)->getExact());
+        $this->assertEquals(0, $user_guess->checkNear($guess)->getNear());
+    }
+
+    public function test_check_near_and_exact_bug_found_solved()
+    {
+        $guess = $this->getMockBuilder(Guess::class)
+            ->getMock();
+
+        $guess->method('getColors')
+            ->willReturn([
+                "R",
+                "Y",
+                "R",
+                "Y",
+                "C",
+                "R",
+                "R",
+                "M"
+            ]);
+
+        /**
+         * @var $guess Guess
+         */
+        $user_guess = new Guess("RRRRRRRY");
+
+        $this->assertEquals(4, $user_guess->checkExacts($guess)->getExact());
+        $this->assertEquals(1, $user_guess->checkNear($guess)->getNear());
+    }
 }

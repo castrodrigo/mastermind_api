@@ -4,6 +4,7 @@ namespace Mastermind\CoreBundle\Document;
 
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class Guess
@@ -12,25 +13,32 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
  */
 class Guess
 {
+    /**
+     * @Serializer\Exclude
+     */
     static $answer = [];
 
     /**
      * @MongoDB\Id
+     * @Serializer\Exclude
      */
     private $id;
 
     /**
      * @MongoDB\Field(name="colors", type="collection")
+     * @Serializer\Exclude
      */
     private $colors = [];
 
     /**
      * @MongoDB\Integer
+     * @Serializer\Groups({"default","details", "win"})
      */
     private $exact;
 
     /**
      * @MongoDB\Integer
+     * @Serializer\Groups({"default","details", "win"})
      */
     private $near;
 
@@ -70,6 +78,13 @@ class Guess
         return $this;
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("guess")
+     * @Serializer\Groups({"default","details", "win"})
+     *
+     * @return string
+     */
     public function toString()
     {
         return self::__toString();
@@ -170,7 +185,8 @@ class Guess
 
     public function checkNear(Guess $guess)
     {
-        $this->near = count(array_intersect(array_unique($this->getColors()), $guess->getColors())) - $this->checkExacts($guess)->getExact();
+        $diff = array_diff($guess->getColors(), static::$answer);
+        $this->near = count(array_intersect(array_unique($this->getColors()), $diff));
         return $this;
     }
 
@@ -193,5 +209,4 @@ class Guess
         $this->exact = $exact;
         return $this;
     }
-
 }
