@@ -12,19 +12,8 @@ namespace Mastermind\CoreBundle\Builder;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Mastermind\CoreBundle\Document\Game;
 
-class GameBuilder
+class GameBuilder extends BuilderAbstract
 {
-    private $manager;
-
-    /**
-     * GameBuilder constructor.
-     * @param DocumentManager $manager
-     */
-    public function __construct($manager)
-    {
-        $this->manager = $manager;
-    }
-
     /**
      * Starts and persists a new Game
      * 

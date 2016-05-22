@@ -33,6 +33,11 @@ class GameConfig
     private $guess_limit;
 
     /**
+     * @MongoDB\Integer
+     */
+    private $number_of_players = 1;
+
+    /**
      * GameConfig constructor.
      */
     public function __construct()
@@ -110,5 +115,23 @@ class GameConfig
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfPlayers()
+    {
+        return $this->number_of_players;
+    }
+
+    /**
+     * @param mixed $number_of_players
+     * @return GameConfig
+     */
+    public function setNumberOfPlayers($number_of_players)
+    {
+        $this->number_of_players = $number_of_players;
+        return $this;
     }
 }

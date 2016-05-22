@@ -11,6 +11,7 @@ namespace Mastermind\CoreBundle\Tests\Builder;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Mastermind\CoreBundle\Builder\GameBuilder;
+use Mastermind\CoreBundle\Builder\MultiplayerBuilder;
 use Mastermind\CoreBundle\Document\Game;
 use Mastermind\CoreBundle\Document\GameConfig;
 use Mastermind\CoreBundle\Document\Player;
@@ -46,6 +47,11 @@ class GameBuilderTest extends KernelTestCase
         $game = $this->builder->start($game);
 
         $this->assertTrue($game instanceof Game);
+    }
+
+    public function test_must_create_a_multiplayer_match()
+    {
+        $game = new Game(new Player(PlayerTest::PLAYERTEST), (new GameConfig())->setNumberOfPlayers(2));
     }
 
     protected function tearDown()
