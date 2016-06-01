@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as Serializer;
  * Class Game
  * @package Mastermind\CoreBundle\Document
  * @MongoDB\Document
- * @Serializer\AccessorOrder("custom", custom = {"colors", "getCodeLength", "game_key", "getLastGuessColors", "getNumGuesses", "past_results", "getLastGuessResult", "solved", "getTimeTaken", "getPlayerName"})
+ * @Serializer\AccessorOrder("custom", custom = {"getGameColors", "getCodeLength", "game_key", "getLastGuessColors", "getNumGuesses", "past_results", "getLastGuessResult", "solved", "getTimeTaken", "getPlayerName"})
  */
 class Game
 {
@@ -30,9 +30,7 @@ class Game
 
     /**
      * @MongoDB\Field(name="colors", type="collection")
-     * @Serializer\SerializedName("colors")
-     * @Serializer\Groups({"default", "details", "win"})
-     *
+     * @Serializer\Exclude
      */
     private $colors;
 
@@ -380,5 +378,18 @@ class Game
     {
         $this->updated_at = $updatedAt;
         return $this;
+    }
+
+    /**
+     * Returns default colors to be Used
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("colors")
+     * @Serializer\Groups({"default", "details", "win"})
+     * @return array
+     */
+    public function getGameColors()
+    {
+        return (new Color())->toArray();
     }
 }
