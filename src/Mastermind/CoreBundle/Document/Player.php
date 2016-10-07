@@ -5,6 +5,7 @@ namespace Mastermind\CoreBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Mastermind\CoreBundle\Interfaces\GameInterface;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class User
@@ -15,11 +16,13 @@ class Player
 {
     /**
      * @MongoDB\Id
+     * @Serializer\Groups({"default"})
      */
     private $id;
 
     /**
      * @MongoDB\String
+     * @Serializer\Groups({"default"})
      */
     private $name;
 

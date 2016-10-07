@@ -38,7 +38,7 @@ class GameController extends FOSRestController
         $context = new SerializationContext();
         $context->setGroups(['default']);
 
-        return $this->handleView($view->setSerializationContext($context)->setData($game));
+        return $this->handleView($view->setSerializationContext($context)->setData($game))->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
@@ -67,8 +67,7 @@ class GameController extends FOSRestController
         $context = new SerializationContext();
         $context->setGroups([$game->getSolved() ? 'win' : 'details']);
 
-//        return $this->handleView($this->view($game));
-        return $this->handleView($view->setSerializationContext($context)->setData($game));
+        return $this->handleView($view->setSerializationContext($context)->setData($game))->setStatusCode($game->getSolved() ? Response::HTTP_OK : Response::HTTP_CREATED);
     }
 
     /**

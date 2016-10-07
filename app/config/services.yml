@@ -7,3 +7,6 @@ services:
     mastermind.game_builder:
         class: Mastermind\CoreBundle\Builder\GameBuilder
         arguments: ["@doctrine_mongodb.odm.default_document_manager"]
+    mastermind.multiplayer_builder:
+        class: Mastermind\CoreBundle\Builder\MultiplayerBuilder
+        arguments: ["@doctrine_mongodb.odm.default_document_manager"]

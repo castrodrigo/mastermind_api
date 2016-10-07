@@ -25,17 +25,22 @@ class Guess
     private $id;
 
     /**
+     * @MongoDB\ReferenceOne(targetDocument="Player", cascade={"persist", "remove"})
+     * @Serializer\Exclude
+     */
+    private $player;
+    
+    /**
      * @MongoDB\Field(name="colors", type="collection")
      * @Serializer\Exclude
      */
     private $colors = [];
-
+    
     /**
      * @MongoDB\Integer
      * @Serializer\Groups({"default","details", "win"})
      */
     private $exact;
-
     /**
      * @MongoDB\Integer
      * @Serializer\Groups({"default","details", "win"})
@@ -49,6 +54,22 @@ class Guess
     public function __construct($colors = null)
     {
         $this->setColors($colors);
+    }
+
+    /**
+     * @return Player
+     */
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+
+    /**
+     * @param Player $player
+     */
+    public function setPlayer(Player $player)
+    {
+        $this->player = $player;
     }
 
     /**
