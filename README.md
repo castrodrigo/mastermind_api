@@ -1,6 +1,13 @@
 # mastermind_api
 Mastermind API Project
 
+Project Team:
+@castrodrigo
+@goulartfs
+@ecarvalho
+@rtancman
+
+
 # local setup
 ```
 1. clone project
