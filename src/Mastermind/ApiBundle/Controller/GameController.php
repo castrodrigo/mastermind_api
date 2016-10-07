@@ -12,6 +12,7 @@ use Mastermind\CoreBundle\Document\Game;
 use Mastermind\CoreBundle\Document\GameConfig;
 use Mastermind\CoreBundle\Document\Guess;
 use Mastermind\CoreBundle\Document\Player;
+use Mastermind\CoreBundle\Document\Color;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
@@ -27,9 +28,12 @@ class GameController extends FOSRestController
 
     public function postAction(Request $request)
     {
+        $color = new Color();
+        
         $game = new Game(new Player($request->request->get('user')), new GameConfig());
         $game = $this->getBuilder()->start($game);
-
+        $game->setColors($color->getColors());
+        
         $view = View::create();
         $context = new SerializationContext();
         $context->setGroups(['default']);
